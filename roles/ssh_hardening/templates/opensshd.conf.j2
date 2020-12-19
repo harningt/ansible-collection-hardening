@@ -141,9 +141,11 @@ KerberosTicketCleanup yes
 #KerberosGetAFSToken no
 {% endif %}
 
+{% if ansible_facts.os_family != 'Alpine' %}
 # Only enable GSSAPI authentication if it is configured.
 GSSAPIAuthentication {{ 'yes' if ssh_gssapi_support else 'no' }}
 GSSAPICleanupCredentials yes
+{% endif %}
 
 {% if ssh_deny_users %}
 # In case you don't use PAM (`UsePAM no`), you can alternatively restrict users and groups here.
@@ -234,7 +236,7 @@ UseDNS {{ 'yes' if (ssh_use_dns|bool) else 'no' }}
 
 PrintMotd {{ 'yes' if (ssh_print_motd|bool) else 'no' }}
 
-{% if ansible_facts.os_family != 'FreeBSD' %}
+{% if ansible_facts.os_family != 'FreeBSD' and ansible_facts.os_family != 'Alpine' %}
 PrintLastLog {{ 'yes' if (ssh_print_last_log|bool) else 'no' }}
 {% endif %}
 
@@ -254,7 +256,7 @@ RevokedKeys /etc/ssh/revoked_keys
 # override default of no subsystems
 # Subsystem sftp /opt/app/openssh5/libexec/sftp-server
 
-Subsystem sftp internal-sftp -l INFO -f LOCAL6 -u {{ sftp_umask }}
+Subsystem sftp {{ 'internal-sftp' if not (ssh_sftp_command) else ssh_sftp_command }} -l INFO -f LOCAL6 -u {{ sftp_umask }}
 
 # These lines must appear at the *end* of sshd_config
 Match Group sftponly

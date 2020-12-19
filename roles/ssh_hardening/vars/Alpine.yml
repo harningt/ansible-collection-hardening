@@ -1,0 +1,12 @@
+---
+sshd_path: /usr/sbin/sshd
+ssh_host_keys_dir: '/etc/ssh'
+sshd_service_name: sshd
+ssh_owner: root
+ssh_group: root
+
+ssh_gssapi_support: false
+ssh_pam_support: false
+ssh_kerberos_support: false
+ssh_sftp_command: '/usr/lib/ssh/sftp-server'
+sshd_disable_crypto_policy: false
